@@ -61,6 +61,4 @@ public class StudentDto {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	
-	
 }

@@ -40,7 +40,14 @@ public class StudentService {
 	}
 	
 	//method to update data
-	public Student updateStudent(int id, Student newStu) {
+	public Student updateStudent(int id, StudentDto stu) {
+		Student newStu= new Student();
+		newStu.setStuName(stu.getStuName());
+		newStu.setStuClass(stu.getStuClass());
+		newStu.setStuFees(stu.getStuFees());
+		newStu.setStuLocation(stu.getStuLocation());
+		newStu.setStuPhone(stu.getStuPhone());
+		
 		Optional<Student> idPresent = repository.findById(id);
 		if(idPresent.isPresent()) {
 			Student oldStu = idPresent.get();

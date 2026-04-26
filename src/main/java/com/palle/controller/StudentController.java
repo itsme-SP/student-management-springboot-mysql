@@ -48,7 +48,7 @@ public class StudentController {
 	
 	//rest Api to update data
 	@PutMapping("/update/{id}")
-	public Student updateStudent(@PathVariable int id,@RequestBody Student stu) {
+	public Student updateStudent(@PathVariable int id,@RequestBody @Valid StudentDto stu) {
 		return service.updateStudent(id, stu);
 	}
 	
