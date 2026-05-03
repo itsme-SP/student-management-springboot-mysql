@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 	import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
@@ -36,7 +37,7 @@ import org.springframework.security.web.SecurityFilterChain;
 		@Bean
 		public AuthenticationProvider authenticationProvider() { //we are using our own authentication provider instead of the default authentication provider
 			DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);//gives authentication to the database
-			provider.setPasswordEncoder(NoOpPasswordEncoder.getInstance());
+			provider.setPasswordEncoder(new BCryptPasswordEncoder(12));
 			return provider;
 		}
 		
