@@ -5,9 +5,11 @@ package com.palle.securityconfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 	import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 	import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,12 +24,15 @@ import org.springframework.security.web.SecurityFilterChain;
 	public class Security {
 		
 		@Autowired
-		private UserDetailsService userDetailsService; // since UserDetailsService is an interface spring does not know how to implement this 
+		private UserDetailsService userDetailsService;
 		
 		@Bean
 		public SecurityFilterChain securityChain(HttpSecurity security) {
 			security.csrf(customizer->customizer.disable());
-			security.authorizeHttpRequests(request->request.anyRequest().authenticated());
+			security.authorizeHttpRequests(request->request
+					.requestMatchers("/user/register","/user/login")
+					.permitAll()
+					.anyRequest().authenticated());
 			security.formLogin(Customizer.withDefaults());
 			security.httpBasic(Customizer.withDefaults());
 			return security.build();
@@ -39,6 +44,11 @@ import org.springframework.security.web.SecurityFilterChain;
 			DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);//gives authentication to the database
 			provider.setPasswordEncoder(new BCryptPasswordEncoder(12));
 			return provider;
+		}
+		
+		@Bean
+		public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) { //authenication manager will talk to authentication provider 
+			return configuration.getAuthenticationManager();
 		}
 		
 	}
