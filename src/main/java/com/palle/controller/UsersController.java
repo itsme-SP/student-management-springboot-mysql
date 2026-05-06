@@ -1,6 +1,7 @@
 package com.palle.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,7 +23,13 @@ public class UsersController {
 	}
 	
 	@PostMapping("/login")
-	public String login(@RequestBody Users user) {
-		return userService.verify(user);
+	public ResponseEntity<String> login(@RequestBody Users user) {
+	    String result = userService.verify(user);
+
+	    if(result.equals("Wrong Username Or Password")) {
+	        return ResponseEntity.status(401).body(result);
+	    }
+
+	    return ResponseEntity.ok(result);
 	}
 }

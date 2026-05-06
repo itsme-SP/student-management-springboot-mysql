@@ -18,6 +18,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.palle.filter.JwtFilter;
 
 	@Configuration
 	@EnableWebSecurity //this says go with this config not the spring default config
@@ -25,6 +28,9 @@ import org.springframework.security.web.SecurityFilterChain;
 		
 		@Autowired
 		private UserDetailsService userDetailsService;
+		
+		@Autowired
+		private JwtFilter jwtFilter;
 		
 		@Bean
 		public SecurityFilterChain securityChain(HttpSecurity security) {
@@ -35,6 +41,7 @@ import org.springframework.security.web.SecurityFilterChain;
 					.anyRequest().authenticated());
 			security.formLogin(Customizer.withDefaults());
 			security.httpBasic(Customizer.withDefaults());
+			security.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 			return security.build();
 		}
 		
