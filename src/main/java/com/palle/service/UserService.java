@@ -7,6 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.palle.dto.UsersDto;
 import com.palle.entity.Users;
 import com.palle.repository.UsersRepository;
 
@@ -22,13 +23,20 @@ public class UserService {
 	@Autowired
 	public JwtService jwtService;
 	
-	public Users register(Users user) {
+	public Users register(UsersDto userDto) {
+		Users user= new Users();
+		user.setName(userDto.getName());
+		user.setPassword(userDto.getPassword());
+		user.setRoles(userDto.getRole());
 		BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(12);
 		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 		return  usersRepository.save(user);
 	}
 	
-	public String verify(Users user) {
+	public String verify(UsersDto userDto) {
+		Users user=new Users();
+		user.setName(userDto.getName());
+		user.setPassword(userDto.getPassword());
 		try {
 		Authentication authentication= authenticationManager
 				.authenticate

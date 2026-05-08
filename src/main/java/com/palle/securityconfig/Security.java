@@ -5,6 +5,7 @@ package com.palle.securityconfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 	import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -20,6 +21,7 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.palle.entity.Permissions;
 import com.palle.filter.JwtFilter;
 
 	@Configuration
@@ -38,9 +40,12 @@ import com.palle.filter.JwtFilter;
 			security.authorizeHttpRequests(request->request
 					.requestMatchers("/user/register","/user/login")
 					.permitAll()
+					.requestMatchers(HttpMethod.GET,"/studentapp/**").hasAuthority(Permissions.STUDENT_READ.name())
+					.requestMatchers(HttpMethod.POST,"/studentapp/**").hasAuthority(Permissions.STUDENT_WRITE.name())
+					.requestMatchers(HttpMethod.PUT,"/studentapp/**").hasAuthority(Permissions.STUDENT_UPDATE.name())
+					.requestMatchers(HttpMethod.DELETE,"/studentapp/**").hasAuthority(Permissions.STUDENT_DELETE.name())
 					.anyRequest().authenticated());
-			security.formLogin(Customizer.withDefaults());
-			security.httpBasic(Customizer.withDefaults());
+
 			security.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 			return security.build();
 		}

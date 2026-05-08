@@ -1,14 +1,25 @@
 package com.palle.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
 public class Users {
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+	@Column(unique = true)
 	private String name;
 	private String password;
+	@Enumerated(EnumType.STRING)
+	private Role role;
+	
+	
 	public int getId() {
 		return id;
 	}
@@ -27,11 +38,19 @@ public class Users {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public Users(int id, String name, String password) {
+	public Role getRoles() {
+		return role;
+	}
+	public void setRoles(Role roles) {
+		this.role = roles;
+	}
+	
+	
+	public Users(String name, String password, Role roles) {
 		super();
-		this.id = id;
 		this.name = name;
 		this.password = password;
+		this.role = roles;
 	}
 	public Users() {
 		super();

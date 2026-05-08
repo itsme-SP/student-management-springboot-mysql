@@ -2,6 +2,9 @@ package com.palle.entity;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
@@ -16,10 +19,12 @@ public class UserPrincipal implements UserDetails{
 	}
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() { //this method is used to set the roles of the individuals
-		
-		//return type is collection of granted authority type 
-		//that is why we set singleton becuase we are passing only a single value
-		return Collections.singleton(new SimpleGrantedAuthority("User")) ; 
+		Set<SimpleGrantedAuthority> simpleGrantedAuthorities=new HashSet<>();
+		simpleGrantedAuthorities.add(new SimpleGrantedAuthority("ROLE_"+user.getRoles().name()));
+		Set<SimpleGrantedAuthority> permissionsAuthorities= user.getRoles().getPermissions().stream()
+				.map(permissions->new SimpleGrantedAuthority(permissions.name())).collect(Collectors.toSet());
+		simpleGrantedAuthorities.addAll(permissionsAuthorities);
+		return simpleGrantedAuthorities;
 		
 	}
 
@@ -34,5 +39,4 @@ public class UserPrincipal implements UserDetails{
 		
 		return user.getName();
 	}
-
 }
